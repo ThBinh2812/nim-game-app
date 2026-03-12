@@ -77,15 +77,24 @@
         </div>
       </div>
 
-      <!-- START -->
+      <!-- ACTION BUTTONS -->
 
-      <div class="pt-4">
+      <div class="pt-4 grid grid-cols-2 gap-4">
+
         <button
           @click="startGame"
-          class="w-full py-4 rounded-xl bg-blue-600 hover:bg-blue-500 shadow-lg shadow-blue-500/40 text-lg font-medium transition hover:shadow-blue-400/80 hover:shadow-xl"
+          class="py-4 rounded-xl bg-blue-600 hover:bg-blue-500 shadow-lg shadow-blue-500/40 text-lg font-medium transition hover:shadow-blue-400/80 hover:shadow-xl"
         >
-          ▶ Start Game
+          Start Game
         </button>
+
+        <button
+          @click="continueGame"
+          class="py-4 rounded-xl bg-blue-600 hover:bg-blue-500 shadow-lg shadow-blue-500/40 text-lg font-medium transition hover:shadow-blue-400/80 hover:shadow-xl"
+        >
+          Continue
+        </button>
+
       </div>
     </div>
   </div>
@@ -94,7 +103,7 @@
 <script setup>
 import { ref } from "vue";
 
-const emit = defineEmits(["startGame"]);
+const emit = defineEmits(["startGame", "continueGame"]);
 
 const mode = ref("PVP");
 const rule = ref("NORMAL");
@@ -108,6 +117,10 @@ function startGame() {
     ai: ai.value,
     size: size.value,
   });
+}
+
+function continueGame(){
+  emit("continueGame");
 }
 
 function modeButton(value) {
