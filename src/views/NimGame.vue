@@ -6,19 +6,19 @@
     <aside class="w-72 border-r border-white/10 p-4 flex flex-col gap-6">
       <div>
         <h2 class="text-xs tracking-widest text-gray-400 mb-3">
-          CURRENT MATCH
+          VÁN ĐẤU HIỆN TẠI
         </h2>
 
         <div class="space-y-2">
           <PlayerCard
-            :name="props.gameMode === 'PVP' ? 'Player 1' : 'Player 1 (You)'"
-            :status="currentPlayer === 1 ? 'CURRENT TURN' : 'WAITING'"
+            :name="props.gameMode === 'PVP' ? 'Người chơi 1' : 'Người chơi (Bạn)'"
+            :status="currentPlayer === 1 ? 'ĐANG CHƠI' : 'CHỜ ĐẾN LƯỢT'"
             :active="currentPlayer === 1"
           />
 
           <PlayerCard
-            :name="props.gameMode === 'PVP' ? 'Player 2' : 'The Master (AI)'"
-            :status="currentPlayer === 2 ? 'CURRENT TURN' : 'WAITING'"
+            :name="props.gameMode === 'PVP' ? 'Người chơi 2' : 'MÁY (AI)'"
+            :status="currentPlayer === 2 ? 'ĐANG CHƠI' : 'CHỜ ĐẾN LƯỢT'"
             :active="currentPlayer === 2"
           />
         </div>
@@ -32,10 +32,10 @@
     <main class="flex-1 flex flex-col overflow-hidden relative">
       <!-- HEADER -->
       <div class="text-center pt-6">
-        <h1 class="text-2xl font-semibold">Pile Selection</h1>
+        <h1 class="text-2xl font-semibold">Chọn đống đá</h1>
 
         <p class="text-gray-400 text-sm mt-2">
-          Choose any number of stones (from left to right) from a single pile.
+          Chọn một số viên đá (từ trái sang phải) trong một đống bất kỳ.
         </p>
       </div>
 
@@ -49,7 +49,7 @@
           <Pile
             v-for="(pile, i) in heaps"
             :key="i"
-            :label="'Pile ' + String.fromCharCode(65 + i)"
+            :label="'Đống ' + String.fromCharCode(65 + i)"
             :count="pile"
             :index="i"
             :selected="
@@ -66,21 +66,21 @@
           @click="endTurn"
           class="px-6 py-3 rounded-lg bg-blue-600 hover:bg-blue-500 shadow-lg shadow-blue-500/30 flex items-center gap-2"
         >
-          End Turn
+          Kết thúc lượt
         </button>
 
         <button
           @click="resetGame"
           class="px-6 py-3 rounded-lg bg-white/5 hover:bg-white/10 border border-white/10"
         >
-          Reset
+          Chơi lại
         </button>
 
         <button
           @click="tryGoMenu"
           class="px-6 py-3 rounded-lg bg-red-600 hover:bg-red-500 shadow-lg shadow-red-500/30"
         >
-          Menu
+          Về Menu
         </button>
       </div>
     </main>
@@ -98,29 +98,29 @@
           {{
             props.gameMode === "PVE"
               ? winner === 1
-                ? "You Win!"
-                : "AI Wins!"
+                ? "Bạn thắng!"
+                : "Máy thắng!"
               : winner === 1
-                ? "Player 1 Wins!"
-                : "Player 2 Wins!"
+                ? "Người chơi 1 thắng!"
+                : "Người chơi 2 thắng!"
           }}
         </h2>
 
-        <p class="text-gray-400 text-sm">Game finished</p>
+        <p class="text-gray-400 text-sm">Trò chơi kết thúc</p>
 
         <div class="flex gap-3 justify-center">
           <button
             @click="resetGame"
             class="px-6 py-3 rounded-lg bg-blue-600 hover:bg-blue-500"
           >
-            Play Again
+            Chơi lại
           </button>
 
           <button
             @click="$emit('goMenu')"
             class="px-6 py-3 rounded-lg bg-white/5 hover:bg-white/10 border border-white/10"
           >
-            Menu
+            Về Menu
           </button>
         </div>
       </div>
@@ -135,10 +135,10 @@
       <div
         class="bg-[#111827] p-8 rounded-xl border border-white/10 text-center space-y-5 w-80 shadow-2xl"
       >
-        <h2 class="text-xl font-semibold">Leave Game?</h2>
+        <h2 class="text-xl font-semibold">Thoát trò chơi?</h2>
 
         <p class="text-gray-400 text-sm">
-          Do you want to save this match before leaving?
+          Bạn có muốn lưu ván chơi trước khi thoát không?
         </p>
 
         <div class="flex gap-3 justify-center">
@@ -146,21 +146,21 @@
             @click="saveAndExit"
             class="px-5 py-2 rounded-lg bg-blue-600 hover:bg-blue-500"
           >
-            Save
+            Lưu
           </button>
 
           <button
             @click="exitWithoutSave"
             class="px-5 py-2 rounded-lg bg-red-600 hover:bg-red-500"
           >
-            Don't Save
+            Không Lưu
           </button>
 
           <button
             @click="showExitConfirm = false"
             class="px-5 py-2 rounded-lg bg-white/5 border border-white/10"
           >
-            Cancel
+            Hủy
           </button>
         </div>
       </div>
@@ -230,11 +230,10 @@ const currentPlayer = ref(1);
 const winner = ref(null);
 
 function createHeaps(size) {
-  if (size === "SMALL") return Array(3).fill(10);
-
-  if (size === "MEDIUM") return Array(5).fill(10);
-
-  if (size === "LARGE") return Array(10).fill(10);
+  const getRandom = () => Math.floor(Math.random() * 10) + 1;
+  if (size === "SMALL") return Array.from({ length: 3 }, getRandom);
+  if (size === "MEDIUM") return Array.from({ length: 5 }, getRandom);
+  if (size === "LARGE") return Array.from({ length: 10 }, getRandom);
 }
 
 /****************** GAME LOGIC ******************/
@@ -324,6 +323,8 @@ function resetGame() {
   currentPlayer.value = 1;
 
   winner.value = null;
+
+  hasMove.value = false;
 }
 
 function tryGoMenu() {
