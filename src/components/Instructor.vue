@@ -12,7 +12,7 @@
   >
 
     <h3 class="text-xs tracking-widest text-gray-400">
-      HOW TO PLAY
+      CÁCH CHƠI
     </h3>
 
 
@@ -23,16 +23,16 @@
       class="text-sm text-gray-300 space-y-2 leading-relaxed"
     >
 
-      <li>• Choose <span class="text-blue-400">one pile</span></li>
+      <li>• Chọn <span class="text-blue-400">một đống đá</span></li>
 
-      <li>• Remove any number of stones</li>
+      <li>• Lấy số viên đá bất kỳ</li>
 
-      <li>• Click <span class="text-blue-400">End Turn</span></li>
+      <li>• Nhấn <span class="text-blue-400">kết thúc lượt</span></li>
 
       <li>
-        Player taking the last stone
+        Người lấy viên đá cuối cùng sẽ
         <span class="text-blue-400">
-          wins
+          thắng
         </span>
       </li>
 
@@ -46,16 +46,16 @@
       class="text-sm text-gray-300 space-y-2 leading-relaxed"
     >
 
-      <li>• Choose <span class="text-blue-400">one pile</span></li>
+      <li>• Chọn <span class="text-blue-400">một đống đá</span></li>
 
-      <li>• Remove any number of stones</li>
+      <li>• Lấy số viên đá bất kỳ</li>
 
-      <li>• Click <span class="text-blue-400">End Turn</span></li>
+      <li>• Nhấn <span class="text-blue-400">kết thúc lượt</span></li>
 
       <li>
-        Player taking the last stone
+        Người lấy viên đá cuối cùng sẽ
         <span class="text-red-400">
-          loses
+          thua
         </span>
       </li>
 
@@ -67,13 +67,13 @@
 
     <div class="border-t border-white/10 pt-3 text-xs text-gray-500">
 
-      Rule:
+      Luật chơi:
 
       <span
         v-if="gameRules === 'NORMAL'"
         class="text-blue-400"
       >
-        Normal Nim
+        Thông thường
       </span>
 
       <span

@@ -8,20 +8,20 @@
       <!-- HEADER -->
 
       <div class="flex justify-between items-center mb-6">
-        <h1 class="text-2xl font-semibold">Saved Matches</h1>
+        <h1 class="text-2xl font-semibold">Lịch Sử</h1>
 
         <button
           @click="emit('goMenu')"
           class="px-4 py-2 rounded-lg bg-white/5 hover:bg-white/10 border border-white/10"
         >
-          Back
+          Trở về
         </button>
       </div>
 
       <!-- MATCH LIST -->
 
       <div v-if="matches.length === 0" class="text-center text-gray-400 py-10">
-        No saved matches
+        Lịch sử trống. Hãy chơi một ván để lưu lại lịch sử trận đấu!
       </div>
 
       <div v-else class="space-y-3 max-h-[400px] overflow-y-auto">
@@ -44,7 +44,7 @@
             @click="playMatch(match)"
             class="px-4 py-2 rounded-lg bg-blue-600 hover:bg-blue-500 shadow shadow-blue-500/40"
           >
-            Play
+            Chơi
           </button>
         </div>
       </div>

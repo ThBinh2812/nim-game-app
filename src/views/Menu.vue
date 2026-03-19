@@ -10,21 +10,21 @@
       <div class="text-center space-y-2">
         <h1 class="text-3xl font-semibold tracking-wide">NIM GAME</h1>
 
-        <p class="text-gray-400 text-sm">Created by Thai Binh</p>
+        <p class="text-gray-400 text-sm">Trò chơi chiến thuật xóa đá cổ điển</p>
       </div>
 
       <!-- MODE SELECT -->
 
       <div class="space-y-3">
-        <h2 class="text-xs tracking-widest text-gray-400">GAME MODE</h2>
+        <h2 class="text-xs tracking-widest text-gray-400">CHẾ ĐỘ CHƠI</h2>
 
         <div class="grid grid-cols-2 gap-4">
           <button @click="mode = 'PVP'" :class="modeButton('PVP')">
-            Player vs Player
+            Người Với Người
           </button>
 
           <button @click="mode = 'PVE'" :class="modeButton('PVE')">
-            Player vs AI
+            Người Với Máy
           </button>
         </div>
       </div>
@@ -32,11 +32,11 @@
       <!-- RULE SELECT -->
 
       <div class="space-y-3">
-        <h2 class="text-xs tracking-widest text-gray-400">GAME RULE</h2>
+        <h2 class="text-xs tracking-widest text-gray-400">LUẬT CHƠI</h2>
 
         <div class="grid grid-cols-2 gap-4">
           <button @click="rule = 'NORMAL'" :class="ruleButton('NORMAL')">
-            Normal
+            Thường
           </button>
 
           <button @click="rule = 'MISERE'" :class="ruleButton('MISERE')">
@@ -48,31 +48,31 @@
       <!-- AI SELECT -->
 
       <div v-if="mode === 'PVE'" class="space-y-3">
-        <h2 class="text-xs tracking-widest text-gray-400">AI DIFFICULTY</h2>
+        <h2 class="text-xs tracking-widest text-gray-400">Độ khó AI</h2>
 
         <div class="grid grid-cols-2 gap-4">
-          <button @click="ai = 'EASY'" :class="aiButton('EASY')">Easy</button>
+          <button @click="ai = 'EASY'" :class="aiButton('EASY')">Dễ</button>
 
-          <button @click="ai = 'HARD'" :class="aiButton('HARD')">Hard</button>
+          <button @click="ai = 'HARD'" :class="aiButton('HARD')">Khó</button>
         </div>
       </div>
 
       <!-- SIZE SELECT -->
 
       <div class="space-y-3">
-        <h2 class="text-xs tracking-widest text-gray-400">GAME SIZE</h2>
+        <h2 class="text-xs tracking-widest text-gray-400">KÍCH THƯỚC MÀN CHƠI</h2>
 
         <div class="grid grid-cols-3 gap-4">
           <button @click="size = 'SMALL'" :class="sizeButton('SMALL')">
-            Small
+            Nhỏ
           </button>
 
           <button @click="size = 'MEDIUM'" :class="sizeButton('MEDIUM')">
-            Medium
+            Vừa
           </button>
 
           <button @click="size = 'LARGE'" :class="sizeButton('LARGE')">
-            Large
+            Lớn
           </button>
         </div>
       </div>
@@ -85,14 +85,14 @@
           @click="startGame"
           class="py-4 rounded-xl bg-blue-600 hover:bg-blue-500 shadow-lg shadow-blue-500/40 text-lg font-medium transition hover:shadow-blue-400/80 hover:shadow-xl"
         >
-          Start Game
+          Bắt Đầu
         </button>
 
         <button
           @click="continueGame"
           class="py-4 rounded-xl bg-blue-600 hover:bg-blue-500 shadow-lg shadow-blue-500/40 text-lg font-medium transition hover:shadow-blue-400/80 hover:shadow-xl"
         >
-          Continue
+          Chơi Tiếp
         </button>
 
       </div>
