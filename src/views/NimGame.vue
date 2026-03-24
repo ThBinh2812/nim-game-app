@@ -25,7 +25,7 @@
           />
         </div>
         <div class="mt-2">
-          <Instructor :gameRules="gameRules" />
+          <Instructor :gameRules="props.gameRules" />
         </div>
       </div>
     </aside>
@@ -188,7 +188,9 @@ import {
 import { watch } from "vue";
 
 /* GAME STATE */
-const emit = defineEmits(["goMenu"]);
+const emit = defineEmits(["goMenu", "saveMatch", "removeFinishedMatch"]);
+const removedOnFinish = ref(false);
+const winner = ref(null);
 const props = defineProps({
   gameSize: {
     type: String,
@@ -202,21 +204,77 @@ const props = defineProps({
   gameAI: {
     type: String,
   },
+  matchData: {
+    type: Object,
+    default: null,
+  },
 });
 
-const heaps = ref(createHeaps(props.gameSize));
+// Nếu có matchData từ lịch sử thì dùng nó, nếu không thì tạo mới
+function createHeaps(size) {
+  const getRandom = () => Math.floor(Math.random() * 10) + 1;
+  if (size === "SMALL") return Array.from({ length: 3 }, getRandom);
+  if (size === "MEDIUM") return Array.from({ length: 5 }, getRandom);
+  if (size === "LARGE") return Array.from({ length: 10 }, getRandom);
+}
 
-const gameMode = props.gameMode;
-const gameRules = props.gameRules;
-const gameAI = props.gameAI;
+const heaps = ref(
+  props.matchData?.heaps
+    ? [...props.matchData.heaps]
+    : createHeaps(props.gameSize),
+);
 
 watch(
   () => props.gameSize,
   (newSize) => {
+    if (props.matchData) return;
+
     heaps.value = createHeaps(newSize);
     selectedMove.value = null;
     currentPlayer.value = 1;
     winner.value = null;
+  },
+);
+
+// Nếu load ván đã lưu thì cập nhật lại trạng thái game theo matchData
+watch(
+  () => props.matchData,
+  (match) => {
+    if (!match) return;
+
+    heaps.value = [...match.heaps];
+    currentPlayer.value = match.currentPlayer;
+    winner.value = null;
+    selectedMove.value = null;
+    hasMove.value = false;
+
+    if (props.gameMode === "PVE" && currentPlayer.value === 2) {
+      setTimeout(() => {
+        endTurn();
+      }, 500);
+    }
+  },
+);
+
+// Nếu có winner thì xóa ván game đó khỏi lịch sử (nếu đang chơi ván đã lưu)
+watch(
+  () => winner.value,
+  (newWinner) => {
+    if (!newWinner) return;
+    if (removedOnFinish.value) return;
+
+    const loadedMatchId = props.matchData?.id;
+    if (loadedMatchId) {
+      emit("removeFinishedMatch", loadedMatchId);
+      removedOnFinish.value = true;
+    }
+  },
+);
+
+watch(
+  () => props.matchData,
+  () => {
+    removedOnFinish.value = false;
   },
 );
 
@@ -228,24 +286,14 @@ const hasMove = ref(false);
 Player 1 = 1
 Player 2 = AI = 2
 */
-
-const currentPlayer = ref(1);
-
-const winner = ref(null);
-
-function createHeaps(size) {
-  const getRandom = () => Math.floor(Math.random() * 10) + 1;
-  if (size === "SMALL") return Array.from({ length: 3 }, getRandom);
-  if (size === "MEDIUM") return Array.from({ length: 5 }, getRandom);
-  if (size === "LARGE") return Array.from({ length: 10 }, getRandom);
-}
+const currentPlayer = ref(props.matchData?.currentPlayer || 1);
 
 /****************** GAME LOGIC ******************/
 
 function playerMove({ heapIndex, removeCount }) {
   if (winner.value) return;
 
-  if (gameMode === "PVE" && currentPlayer.value !== 1) return;
+  if (props.gameMode === "PVE" && currentPlayer.value !== 1) return;
 
   selectedMove.value = {
     heapIndex,
@@ -260,7 +308,7 @@ function endTurn() {
   let result = null;
 
   // NORMAL
-  if (gameRules === "NORMAL") {
+  if (props.gameRules === "NORMAL") {
     result = playerEndTurnNormal(
       heaps.value,
       selectedMove.value,
@@ -269,7 +317,7 @@ function endTurn() {
   }
 
   // MISERE
-  if (gameRules === "MISERE") {
+  if (props.gameRules === "MISERE") {
     result = playerEndTurnMisere(
       heaps.value,
       selectedMove.value,
@@ -290,22 +338,26 @@ function endTurn() {
   hasMove.value = true;
 
   // AI TURN
-  if (gameMode === "PVE" && currentPlayer.value === 2) {
+  if (props.gameMode === "PVE" && currentPlayer.value === 2) {
     setTimeout(() => {
       let aiResult = null;
 
       // NORMAL
-      if (gameRules === "NORMAL") {
-        if (gameAI === "EASY") aiResult = aiMoveTurnNormalEasy(heaps.value);
+      if (props.gameRules === "NORMAL") {
+        if (props.gameAI === "EASY")
+          aiResult = aiMoveTurnNormalEasy(heaps.value);
 
-        if (gameAI === "HARD") aiResult = aiMoveTurnNormalHard(heaps.value);
+        if (props.gameAI === "HARD")
+          aiResult = aiMoveTurnNormalHard(heaps.value);
       }
 
       // MISERE
-      if (gameRules === "MISERE") {
-        if (gameAI === "EASY") aiResult = aiMoveTurnMisereEasy(heaps.value);
+      if (props.gameRules === "MISERE") {
+        if (props.gameAI === "EASY")
+          aiResult = aiMoveTurnMisereEasy(heaps.value);
 
-        if (gameAI === "HARD") aiResult = aiMoveTurnMisereHard(heaps.value);
+        if (props.gameAI === "HARD")
+          aiResult = aiMoveTurnMisereHard(heaps.value);
       }
 
       if (!aiResult) return;
@@ -348,7 +400,19 @@ function tryGoMenu() {
 }
 
 function saveAndExit() {
-  // TODO: Xử lý save game vào lịch sử
+  const match = {
+    id: props.matchData?.id ?? Date.now() + Math.floor(Math.random() * 1000),
+    mode: props.gameMode,
+    size: props.gameSize,
+    rule: props.gameRules,
+    ai: props.gameAI,
+    heaps: [...heaps.value],
+    currentPlayer: currentPlayer.value,
+    date: new Date().toLocaleString(),
+  };
+
+  showExitConfirm.value = false;
+  emit("saveMatch", match);
   emit("goMenu");
 }
 
