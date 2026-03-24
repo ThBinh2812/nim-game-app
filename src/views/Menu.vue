@@ -1,101 +1,104 @@
 <template>
-  <div
-    class="min-h-screen bg-gradient-to-br from-[#0b0f1a] to-[#05070d] text-gray-200 flex items-center justify-center"
-  >
-    <div
-      class="w-[520px] bg-[#0f172a]/80 backdrop-blur-md border border-white/10 rounded-2xl p-10 shadow-2xl space-y-8"
-    >
+  <div class="min-h-screen bg-gradient-to-br from-[#0b0f1a] to-[#05070d] flex items-center justify-center text-gray-200">
+
+    <div class="w-[520px] bg-[#0f172a]/80 backdrop-blur-md border border-white/10 rounded-2xl p-10 shadow-2xl overflow-hidden">
+
       <!-- TITLE -->
-
-      <div class="text-center space-y-2">
+      <div class="text-center mb-6">
         <h1 class="text-3xl font-semibold tracking-wide">NIM GAME</h1>
-
         <p class="text-gray-400 text-sm">Trò chơi chiến thuật xóa đá cổ điển</p>
       </div>
 
-      <!-- MODE SELECT -->
+      <transition name="slide-fade" mode="out-in">
 
-      <div class="space-y-3">
-        <h2 class="text-xs tracking-widest text-gray-400">CHẾ ĐỘ CHƠI</h2>
+        <!-- ================= MAIN ================= -->
+        <div v-if="step === 'MAIN'" key="main" class="space-y-4">
 
-        <div class="grid grid-cols-2 gap-4">
-          <button @click="mode = 'PVP'" :class="modeButton('PVP')">
-            Người Với Người
+          <button @click="goPVP" class="menuBtn">
+            Người với người
           </button>
 
-          <button @click="mode = 'PVE'" :class="modeButton('PVE')">
-            Người Với Máy
+          <button @click="goPVE" class="menuBtn">
+            Người với máy
           </button>
+
+          <button @click="continueGame" class="menuBtn">
+            Chơi tiếp
+          </button>
+
         </div>
-      </div>
 
-      <!-- RULE SELECT -->
+        <!-- ================= PVP ================= -->
+        <div v-else-if="step === 'PVP'" key="pvp" class="space-y-6">
 
-      <div class="space-y-3">
-        <h2 class="text-xs tracking-widest text-gray-400">LUẬT CHƠI</h2>
+          <!-- RULE -->
+          <div>
+            <h2 class="title">LUẬT CHƠI</h2>
+            <div class="grid grid-cols-2 gap-4 mt-2">
+              <button @click="rule = 'NORMAL'" :class="stoneBtn(rule === 'NORMAL')">Thường</button>
+              <button @click="rule = 'MISERE'" :class="stoneBtn(rule === 'MISERE')">Misère</button>
+            </div>
+          </div>
 
-        <div class="grid grid-cols-2 gap-4">
-          <button @click="rule = 'NORMAL'" :class="ruleButton('NORMAL')">
-            Thường
-          </button>
+          <!-- SIZE -->
+          <div>
+            <h2 class="title">KÍCH THƯỚC MÀN CHƠI</h2>
+            <div class="grid grid-cols-3 gap-4 mt-2">
+              <button @click="size = 'SMALL'" :class="stoneBtn(size === 'SMALL')">Nhỏ</button>
+              <button @click="size = 'MEDIUM'" :class="stoneBtn(size === 'MEDIUM')">Vừa</button>
+              <button @click="size = 'LARGE'" :class="stoneBtn(size === 'LARGE')">Lớn</button>
+            </div>
+          </div>
 
-          <button @click="rule = 'MISERE'" :class="ruleButton('MISERE')">
-            Misère
-          </button>
+          <!-- ACTION -->
+          <div class="grid grid-cols-2 gap-4 pt-4">
+            <button @click="startGame('PVP')" class="menuBtn">Bắt đầu</button>
+            <button @click="back" class="menuBtn">Trở lại</button>
+          </div>
+
         </div>
-      </div>
 
-      <!-- AI SELECT -->
+        <!-- ================= PVE ================= -->
+        <div v-else key="pve" class="space-y-6">
 
-      <div v-if="mode === 'PVE'" class="space-y-3">
-        <h2 class="text-xs tracking-widest text-gray-400">Độ khó AI</h2>
+          <!-- RULE -->
+          <div>
+            <h2 class="title">LUẬT CHƠI</h2>
+            <div class="grid grid-cols-2 gap-4 mt-2">
+              <button @click="rule = 'NORMAL'" :class="stoneBtn(rule === 'NORMAL')">Thường</button>
+              <button @click="rule = 'MISERE'" :class="stoneBtn(rule === 'MISERE')">Misère</button>
+            </div>
+          </div>
 
-        <div class="grid grid-cols-2 gap-4">
-          <button @click="ai = 'EASY'" :class="aiButton('EASY')">Dễ</button>
+          <!-- AI -->
+          <div>
+            <h2 class="title">ĐỘ KHÓ</h2>
+            <div class="grid grid-cols-2 gap-4 mt-2">
+              <button @click="ai = 'EASY'" :class="stoneBtn(ai === 'EASY')">Dễ</button>
+              <button @click="ai = 'HARD'" :class="stoneBtn(ai === 'HARD')">Khó</button>
+            </div>
+          </div>
 
-          <button @click="ai = 'HARD'" :class="aiButton('HARD')">Khó</button>
+          <!-- SIZE -->
+          <div>
+            <h2 class="title">KÍCH THƯỚC MÀN CHƠI</h2>
+            <div class="grid grid-cols-3 gap-4 mt-2">
+              <button @click="size = 'SMALL'" :class="stoneBtn(size === 'SMALL')">Nhỏ</button>
+              <button @click="size = 'MEDIUM'" :class="stoneBtn(size === 'MEDIUM')">Vừa</button>
+              <button @click="size = 'LARGE'" :class="stoneBtn(size === 'LARGE')">Lớn</button>
+            </div>
+          </div>
+
+          <!-- ACTION -->
+          <div class="grid grid-cols-2 gap-4 pt-4">
+            <button @click="startGame('PVE')" class="menuBtn">Bắt đầu</button>
+            <button @click="back" class="menuBtn">Trở lại</button>
+          </div>
+
         </div>
-      </div>
 
-      <!-- SIZE SELECT -->
+      </transition>
 
-      <div class="space-y-3">
-        <h2 class="text-xs tracking-widest text-gray-400">KÍCH THƯỚC MÀN CHƠI</h2>
-
-        <div class="grid grid-cols-3 gap-4">
-          <button @click="size = 'SMALL'" :class="sizeButton('SMALL')">
-            Nhỏ
-          </button>
-
-          <button @click="size = 'MEDIUM'" :class="sizeButton('MEDIUM')">
-            Vừa
-          </button>
-
-          <button @click="size = 'LARGE'" :class="sizeButton('LARGE')">
-            Lớn
-          </button>
-        </div>
-      </div>
-
-      <!-- ACTION BUTTONS -->
-
-      <div class="pt-4 grid grid-cols-2 gap-4">
-
-        <button
-          @click="startGame"
-          class="py-4 rounded-xl bg-blue-600 hover:bg-blue-500 shadow-lg shadow-blue-500/40 text-lg font-medium transition hover:shadow-blue-400/80 hover:shadow-xl"
-        >
-          Bắt Đầu
-        </button>
-
-        <button
-          @click="continueGame"
-          class="py-4 rounded-xl bg-blue-600 hover:bg-blue-500 shadow-lg shadow-blue-500/40 text-lg font-medium transition hover:shadow-blue-400/80 hover:shadow-xl"
-        >
-          Chơi Tiếp
-        </button>
-
-      </div>
     </div>
   </div>
 </template>
@@ -105,45 +108,89 @@ import { ref } from "vue";
 
 const emit = defineEmits(["startGame", "continueGame"]);
 
-const mode = ref("PVP");
-const rule = ref("NORMAL");
-const ai = ref("HARD");
+const step = ref("MAIN");
 const size = ref("MEDIUM");
+const ai = ref("HARD");
+const rule = ref("NORMAL");
 
-function startGame() {
+// NAV
+function goPVP() {
+  step.value = "PVP";
+}
+
+function goPVE() {
+  step.value = "PVE";
+}
+
+function back() {
+  step.value = "MAIN";
+}
+
+// ACTION
+function startGame(mode) {
   emit("startGame", {
-    mode: mode.value,
-    rule: rule.value,
-    ai: ai.value,
+    mode,
     size: size.value,
+    ai: ai.value,
+    rule: rule.value,
   });
 }
 
-function continueGame(){
+function continueGame() {
   emit("continueGame");
 }
 
-function modeButton(value) {
-  return mode.value === value
-    ? "py-3 rounded-lg bg-blue-600 border border-blue-400 shadow-lg shadow-blue-500/40 transition hover:shadow-blue-400/80"
-    : "py-3 rounded-lg bg-white/5 hover:bg-white/10 border border-white/10 transition hover:shadow-lg hover:shadow-blue-500/20";
-}
-
-function sizeButton(value) {
-  return size.value === value
-    ? "py-3 rounded-lg bg-blue-600 border border-blue-400 shadow-lg shadow-blue-500/40 transition hover:shadow-blue-400/80"
-    : "py-3 rounded-lg bg-white/5 hover:bg-white/10 border border-white/10 transition hover:shadow-lg hover:shadow-blue-500/20";
-}
-
-function ruleButton(value) {
-  return rule.value === value
-    ? "py-3 rounded-lg bg-blue-600 border border-blue-400 shadow-lg shadow-blue-500/40 transition hover:shadow-blue-400/80"
-    : "py-3 rounded-lg bg-white/5 hover:bg-white/10 border border-white/10 transition hover:shadow-lg hover:shadow-blue-500/20";
-}
-
-function aiButton(value) {
-  return ai.value === value
-    ? "py-3 rounded-lg bg-blue-600 border border-blue-400 shadow-lg shadow-blue-500/40 transition hover:shadow-blue-400/80"
-    : "py-3 rounded-lg bg-white/5 hover:bg-white/10 border border-white/10 transition hover:shadow-lg hover:shadow-blue-500/20";
+// STYLE stone
+function stoneBtn(active) {
+  return `
+    py-3 rounded-xl border transition-all duration-200
+    ${active
+      ? "border-blue-400 bg-blue-500/20 shadow-md shadow-blue-500/30 scale-105"
+      : "border-white/20 bg-white/5 hover:bg-blue-500/10 hover:scale-105"}
+  `;
 }
 </script>
+
+<style scoped>
+.menuBtn {
+  width: 100%;
+  padding: 1rem;
+  border-radius: 0.75rem;
+  border: 1px solid rgba(255,255,255,0.1);
+  background: rgba(255,255,255,0.05);
+  transition: all 0.2s;
+}
+
+.menuBtn:hover {
+  background: rgba(255,255,255,0.1);
+  transform: scale(1.05);
+}
+
+.menuBtn:active {
+  transform: scale(0.95);
+}
+
+/* animation */
+.slide-fade-enter-active {
+  transition: all 0.35s ease;
+}
+.slide-fade-leave-active {
+  transition: all 0.25s ease;
+  position: absolute;
+  width: 100%;
+}
+.slide-fade-enter-from {
+  opacity: 0;
+  transform: translateX(40px);
+}
+.slide-fade-leave-to {
+  opacity: 0;
+  transform: translateX(-40px);
+}
+
+.title {
+  font-size: 12px;
+  letter-spacing: 2px;
+  color: #9ca3af;
+}
+</style>

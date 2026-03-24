@@ -11,7 +11,9 @@
 
         <div class="space-y-2">
           <PlayerCard
-            :name="props.gameMode === 'PVP' ? 'Người chơi 1' : 'Người chơi (Bạn)'"
+            :name="
+              props.gameMode === 'PVP' ? 'Người chơi 1' : 'Người chơi (Bạn)'
+            "
             :status="currentPlayer === 1 ? 'ĐANG CHƠI' : 'CHỜ ĐẾN LƯỢT'"
             :active="currentPlayer === 1"
           />
@@ -87,44 +89,46 @@
 
     <!-- WINNER POPUP -->
 
-    <div
-      v-if="winner"
-      class="absolute inset-0 flex items-center justify-center bg-black/70 backdrop-blur-sm"
-    >
+    <transition name="popup-fade">
       <div
-        class="bg-[#111827] p-8 rounded-xl border border-white/10 text-center space-y-5 w-80 shadow-2xl"
+        v-if="winner"
+        class="absolute inset-0 flex items-center justify-center bg-black/70 backdrop-blur-sm"
       >
-        <h2 class="text-2xl font-semibold">
-          {{
-            props.gameMode === "PVE"
-              ? winner === 1
-                ? "Bạn thắng!"
-                : "Máy thắng!"
-              : winner === 1
-                ? "Người chơi 1 thắng!"
-                : "Người chơi 2 thắng!"
-          }}
-        </h2>
+        <div
+          class="bg-[#111827] p-8 rounded-xl border border-white/10 text-center space-y-5 w-80 shadow-2xl"
+        >
+          <h2 class="text-2xl font-semibold">
+            {{
+              props.gameMode === "PVE"
+                ? winner === 1
+                  ? "Bạn thắng!"
+                  : "Máy thắng!"
+                : winner === 1
+                  ? "Người chơi 1 thắng!"
+                  : "Người chơi 2 thắng!"
+            }}
+          </h2>
 
-        <p class="text-gray-400 text-sm">Trò chơi kết thúc</p>
+          <p class="text-gray-400 text-sm">Trò chơi kết thúc</p>
 
-        <div class="flex gap-3 justify-center">
-          <button
-            @click="resetGame"
-            class="px-6 py-3 rounded-lg bg-blue-600 hover:bg-blue-500"
-          >
-            Chơi lại
-          </button>
+          <div class="flex gap-3 justify-center">
+            <button
+              @click="resetGame"
+              class="px-6 py-3 rounded-lg bg-blue-600 hover:bg-blue-500"
+            >
+              Chơi lại
+            </button>
 
-          <button
-            @click="$emit('goMenu')"
-            class="px-6 py-3 rounded-lg bg-white/5 hover:bg-white/10 border border-white/10"
-          >
-            Về Menu
-          </button>
+            <button
+              @click="$emit('goMenu')"
+              class="px-6 py-3 rounded-lg bg-white/5 hover:bg-white/10 border border-white/10"
+            >
+              Về Menu
+            </button>
+          </div>
         </div>
       </div>
-    </div>
+    </transition>
 
     <!-- EXIT CONFIRM POPUP -->
 
@@ -153,12 +157,12 @@
             @click="exitWithoutSave"
             class="px-5 py-2 rounded-lg bg-red-600 hover:bg-red-500"
           >
-            Không Lưu
+            Không
           </button>
 
           <button
             @click="showExitConfirm = false"
-            class="px-5 py-2 rounded-lg bg-white/5 border border-white/10"
+            class="px-5 py-2 rounded-lg bg-white/5 border border-white/10 hover:bg-white/10"
           >
             Hủy
           </button>
@@ -182,7 +186,7 @@ import {
   aiMoveTurnMisereHard,
 } from "@/store/startGame.js";
 import { watch } from "vue";
-// test
+
 /* GAME STATE */
 const emit = defineEmits(["goMenu"]);
 const props = defineProps({
@@ -367,5 +371,29 @@ function exitWithoutSave() {
 .pile-leave-to {
   opacity: 0;
   transform: translateY(-20px) scale(0.8);
+}
+
+/* Winner pop-up style */
+.popup-fade-enter-active {
+  transition: all 0.35s ease;
+}
+
+.popup-fade-leave-active {
+  transition: all 0.25s ease;
+}
+
+.popup-fade-enter-from {
+  opacity: 0;
+  transform: scale(0.9);
+}
+
+.popup-fade-enter-to {
+  opacity: 1;
+  transform: scale(1);
+}
+
+.popup-fade-leave-to {
+  opacity: 0;
+  transform: scale(0.9);
 }
 </style>
