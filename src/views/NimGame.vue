@@ -182,7 +182,7 @@ import {
   aiMoveTurnMisereHard,
 } from "@/store/startGame.js";
 import { watch } from "vue";
-
+// test
 /* GAME STATE */
 const emit = defineEmits(["goMenu"]);
 const props = defineProps({
