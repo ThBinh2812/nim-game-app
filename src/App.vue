@@ -22,6 +22,7 @@
     :matches="savedMatches"
     @goMenu="screen = 'MENU'"
     @loadMatch="loadSavedGame"
+    @deleteMatch="handleDeleteMatch"
   />
 </template>
 
@@ -85,7 +86,7 @@ function loadSavedGame(match) {
 }
 
 // =======================
-// SAVE GAME 
+// SAVE GAME
 // =======================
 async function handleSaveMatch(match) {
   const index = savedGames.value.findIndex((g) => g.id === match.id);
@@ -98,6 +99,20 @@ async function handleSaveMatch(match) {
 
   savedMatches.value = [...savedGames.value];
   await writeSavedGames();
+}
+
+// Xóa ván game khỏi lịch sử
+async function handleDeleteMatch(matchId) {
+  const index = savedGames.value.findIndex((g) => g.id === matchId);
+  if (index === -1) return;
+
+  savedGames.value.splice(index, 1);
+  savedMatches.value = [...savedGames.value];
+  await writeSavedGames();
+
+  if (currentMatch.value?.id === matchId) {
+    currentMatch.value = null;
+  }
 }
 
 // Xóa ván game đã hoàn thành khỏi lịch sử
