@@ -19,20 +19,17 @@ export function playerEndTurnNormal(heaps, selectedMove, currentPlayer) {
 
   newHeaps[heapIndex] -= removeCount;
 
-  // remove pile = 0
-  const filteredHeaps = newHeaps.filter((h) => h > 0);
-
   // check win
-  if (filteredHeaps.length === 0) {
+  if (newHeaps.every((h) => h === 0)) {
     return {
-      heaps: [],
+      heaps: newHeaps,
       winner: currentPlayer,
       currentPlayer: null,
     };
   }
 
   return {
-    heaps: filteredHeaps,
+    heaps: newHeaps,
 
     winner: null,
 
@@ -51,7 +48,7 @@ export function aiMoveTurnNormalEasy(heaps) {
   const w = checkWinnerNormal(newHeaps, 2);
 
   return {
-    heaps: newHeaps.filter((h) => h > 0),
+    heaps: newHeaps,
 
     currentPlayer: w ? null : 1,
 
@@ -73,7 +70,7 @@ export function aiMoveTurnNormalHard(heaps) {
   const w = checkWinnerNormal(newHeaps, 2);
 
   return {
-    heaps: newHeaps.filter((h) => h > 0),
+    heaps: newHeaps,
 
     currentPlayer: w ? null : 1,
 
@@ -97,14 +94,12 @@ export function playerEndTurnMisere(heaps, selectedMove, currentPlayer) {
 
   newHeaps[heapIndex] -= removeCount;
 
-  const filteredHeaps = newHeaps.filter((h) => h > 0);
-
   const otherPlayer = currentPlayer === 1 ? 2 : 1;
 
-  const w = checkWinnerMisere(filteredHeaps, currentPlayer, otherPlayer);
+  const w = checkWinnerMisere(newHeaps, currentPlayer, otherPlayer);
 
   return {
-    heaps: filteredHeaps,
+    heaps: newHeaps,
 
     winner: w,
 
@@ -122,7 +117,7 @@ export function aiMoveTurnMisereEasy(heaps) {
   const w = checkWinnerMisere(newHeaps, 2, 1);
 
   return {
-    heaps: newHeaps.filter((h) => h > 0),
+    heaps: newHeaps,
 
     currentPlayer: w ? null : 1,
 
@@ -143,7 +138,7 @@ export function aiMoveTurnMisereHard(heaps) {
   const w = checkWinnerMisere(newHeaps, 2, 1);
 
   return {
-    heaps: newHeaps.filter((h) => h > 0),
+    heaps: newHeaps,
 
     currentPlayer: w ? null : 1,
 
