@@ -56,6 +56,9 @@ export function aiMoveTurnNormalEasy(heaps) {
     currentPlayer: w ? null : 1,
 
     winner: w,
+
+    heapIndex: move.heapIndex,
+    removeCount: move.removeCount,
   };
 }
 
@@ -75,6 +78,9 @@ export function aiMoveTurnNormalHard(heaps) {
     currentPlayer: w ? null : 1,
 
     winner: w,
+
+    heapIndex: move.heapIndex,
+    removeCount: move.removeCount,
   };
 }
 
@@ -121,6 +127,9 @@ export function aiMoveTurnMisereEasy(heaps) {
     currentPlayer: w ? null : 1,
 
     winner: w,
+
+    heapIndex: move.heapIndex,
+    removeCount: move.removeCount,
   };
 }
 // AI Turn - Hard
@@ -139,5 +148,8 @@ export function aiMoveTurnMisereHard(heaps) {
     currentPlayer: w ? null : 1,
 
     winner: w,
+
+    heapIndex: move.heapIndex,
+    removeCount: move.removeCount,
   };
 }

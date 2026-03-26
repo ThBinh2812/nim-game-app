@@ -48,7 +48,7 @@
           tag="div"
           class="flex flex-wrap justify-center gap-5 max-w-full"
         >
-          <Pile
+          <!-- <Pile
             v-for="(pile, i) in heaps"
             :key="i"
             :label="'Đống ' + String.fromCharCode(65 + i)"
@@ -57,6 +57,23 @@
             :selected="
               selectedMove?.heapIndex === i ? selectedMove.removeCount : 0
             "
+            @remove="playerMove"
+          /> -->
+
+          <Pile
+            v-for="(pile, i) in heaps"
+            :key="i"
+            :label="'Đống ' + String.fromCharCode(65 + i)"
+            :count="pile"
+            :index="i"
+            :selected="
+              selectedMove?.heapIndex === i
+                ? selectedMove.removeCount
+                : aiMove?.heapIndex === i
+                  ? aiMove.removeCount
+                  : 0
+            "
+            :isAI="aiMove?.heapIndex === i"
             @remove="playerMove"
           />
         </TransitionGroup>
@@ -190,6 +207,7 @@ import { watch } from "vue";
 /* GAME STATE */
 const emit = defineEmits(["goMenu", "saveMatch", "removeFinishedMatch"]);
 const removedOnFinish = ref(false);
+const aiMove = ref(null);
 const winner = ref(null);
 const props = defineProps({
   gameSize: {
@@ -362,12 +380,25 @@ function endTurn() {
 
       if (!aiResult) return;
 
-      heaps.value = aiResult.heaps;
+      aiMove.value = {
+        heapIndex: aiResult.heapIndex,
+        removeCount: aiResult.removeCount,
+      };
 
-      winner.value = aiResult.winner;
+      setTimeout(() => {
+        heaps.value = aiResult.heaps;
+        winner.value = aiResult.winner;
+        currentPlayer.value = aiResult.currentPlayer;
 
-      currentPlayer.value = aiResult.currentPlayer;
-    }, 1000);
+        aiMove.value = null;
+      }, 1000);
+
+      // heaps.value = aiResult.heaps;
+
+      // winner.value = aiResult.winner;
+
+      // currentPlayer.value = aiResult.currentPlayer;
+    }, 800);
   }
 }
 
