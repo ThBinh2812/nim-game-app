@@ -194,31 +194,32 @@ function stoneBtn(active) {
   color: #9ca3af;
 }
 
-/* PVP - tím đỏ */
+/* PVP - xanh */
 .pvpBtn {
-  border: 1px solid rgba(168, 85, 247, 0.4);
-  background: rgba(168, 85, 247, 0.15);
-  color: #e9d5ff;
-  box-shadow: 0 0 15px rgba(168, 85, 247, 0.25);
-}
-
-.pvpBtn:hover {
-  background: rgba(168, 85, 247, 0.25);
-  transform: scale(1.05);
-  box-shadow: 0 0 25px rgba(168, 85, 247, 0.4);
-}
-
-/* PVE - xanh */
-.pveBtn {
   border: 1px solid rgba(59, 130, 246, 0.4);
   background: rgba(59, 130, 246, 0.15);
   color: #bfdbfe;
   box-shadow: 0 0 15px rgba(59, 130, 246, 0.25);
 }
 
-.pveBtn:hover {
+.pvpBtn:hover {
   background: rgba(59, 130, 246, 0.25);
   transform: scale(1.05);
   box-shadow: 0 0 25px rgba(59, 130, 246, 0.4);
 }
+
+/* PVE - tím */
+.pveBtn {
+  border: 1px solid rgba(168, 85, 247, 0.4);
+  background: rgba(168, 85, 247, 0.15);
+  color: #e9d5ff;
+  box-shadow: 0 0 15px rgba(168, 85, 247, 0.25);
+}
+
+.pveBtn:hover {
+  background: rgba(168, 85, 247, 0.25);
+  transform: scale(1.05);
+  box-shadow: 0 0 25px rgba(168, 85, 247, 0.4);
+}
+
 </style>

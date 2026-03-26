@@ -9,6 +9,7 @@
           VÁN ĐẤU HIỆN TẠI
         </h2>
 
+        <!-- Người chơi -->
         <div class="space-y-2">
           <PlayerCard
             :name="
@@ -24,8 +25,45 @@
             :active="currentPlayer === 2"
           />
         </div>
+
+        <!-- Hướng dẫn -->
         <div class="mt-2">
           <Instructor :gameRules="props.gameRules" />
+        </div>
+
+        <!-- Log nước đi -->
+        <div class="mt-4">
+          <div class="bg-white/5 border border-white/10 rounded-xl p-3">
+            <h3 class="text-xs text-gray-400 mb-2 tracking-wider">
+              LỊCH SỬ NƯỚC ĐI
+            </h3>
+
+            <div
+              class="log-scroll max-h-60 overflow-y-auto text-xs space-y-1 pr-2"
+            >
+              <div
+                v-for="(log, i) in moveLogs"
+                :key="i"
+                :class="[
+                  'transition-all',
+                  i === 0
+                    ? 'text-white font-medium'
+                    : 'text-gray-400 opacity-70',
+                ]"
+              >
+                <span
+                  :class="
+                    log.player === 1 ? 'text-blue-400' : 'text-purple-400'
+                  "
+                >
+                  {{ getPlayerName(log.player) }}
+                </span>
+
+                lấy {{ log.removeCount }} viên từ đống
+                {{ String.fromCharCode(65 + log.heapIndex) }}
+              </div>
+            </div>
+          </div>
         </div>
       </div>
     </aside>
@@ -48,18 +86,6 @@
           tag="div"
           class="flex flex-wrap justify-center gap-5 max-w-full"
         >
-          <!-- <Pile
-            v-for="(pile, i) in heaps"
-            :key="i"
-            :label="'Đống ' + String.fromCharCode(65 + i)"
-            :count="pile"
-            :index="i"
-            :selected="
-              selectedMove?.heapIndex === i ? selectedMove.removeCount : 0
-            "
-            @remove="playerMove"
-          /> -->
-
           <Pile
             v-for="(pile, i) in heaps"
             :key="i"
@@ -209,6 +235,7 @@ const emit = defineEmits(["goMenu", "saveMatch", "removeFinishedMatch"]);
 const removedOnFinish = ref(false);
 const aiMove = ref(null);
 const winner = ref(null);
+const moveLogs = ref([]);
 const props = defineProps({
   gameSize: {
     type: String,
@@ -308,6 +335,13 @@ const currentPlayer = ref(props.matchData?.currentPlayer || 1);
 
 /****************** GAME LOGIC ******************/
 
+function getPlayerName(player) {
+  if (props.gameMode === "PVP") {
+    return player === 1 ? "Người chơi 1" : "Người chơi 2";
+  }
+  return player === 1 ? "Bạn" : "AI";
+}
+
 function playerMove({ heapIndex, removeCount }) {
   if (winner.value) return;
 
@@ -347,6 +381,12 @@ function endTurn() {
 
   heaps.value = result.heaps;
 
+  moveLogs.value.unshift({
+    player: currentPlayer.value,
+    heapIndex: selectedMove.value.heapIndex,
+    removeCount: selectedMove.value.removeCount,
+  });
+
   winner.value = result.winner;
 
   currentPlayer.value = result.currentPlayer;
@@ -385,6 +425,12 @@ function endTurn() {
         removeCount: aiResult.removeCount,
       };
 
+      moveLogs.value.unshift({
+        player: 2,
+        heapIndex: aiResult.heapIndex,
+        removeCount: aiResult.removeCount,
+      });
+
       setTimeout(() => {
         heaps.value = aiResult.heaps;
         winner.value = aiResult.winner;
@@ -412,6 +458,8 @@ function resetGame() {
   winner.value = null;
 
   hasMove.value = false;
+
+  moveLogs.value = [];
 }
 
 function tryGoMenu() {
@@ -490,5 +538,27 @@ function exitWithoutSave() {
 .popup-fade-leave-to {
   opacity: 0;
   transform: scale(0.9);
+}
+
+/* Bảng log */
+.log-scroll::-webkit-scrollbar {
+  width: 4px;
+}
+
+.log-scroll::-webkit-scrollbar-track {
+  background: transparent;
+}
+
+.log-scroll::-webkit-scrollbar-thumb {
+  background: rgba(255, 255, 255, 0.2);
+  border-radius: 999px;
+}
+
+.log-scroll::-webkit-scrollbar-thumb:hover {
+  background: rgba(255, 255, 255, 0.35);
+}
+
+.log-scroll div {
+  transition: all 0.2s ease;
 }
 </style>
