@@ -73,7 +73,7 @@
         v-if="gameRules === 'NORMAL'"
         class="text-blue-400"
       >
-        Thông thường
+        Nim thường
       </span>
 
       <span

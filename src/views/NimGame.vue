@@ -3,7 +3,7 @@
     class="h-screen overflow-hidden bg-gradient-to-br from-[#0b0f1a] to-[#05070d] text-gray-200 flex"
   >
     <!-- LEFT PANEL -->
-    <aside class="w-72 border-r border-white/10 p-4 flex flex-col gap-6">
+    <aside class="w-75 border-r border-white/10 p-4 flex flex-col gap-6">
       <div>
         <h2 class="text-xs tracking-widest text-gray-400 mb-3">
           VÁN ĐẤU HIỆN TẠI
@@ -56,6 +56,7 @@
                     log.player === 1 ? 'text-blue-400' : 'text-purple-400'
                   "
                 >
+                Lượt {{ log.moveStep }} :
                   {{ getPlayerName(log.player) }}
                 </span>
 
@@ -241,7 +242,6 @@ const emit = defineEmits(["goMenu", "saveMatch", "removeFinishedMatch"]);
 const removedOnFinish = ref(false);
 const aiMove = ref(null);
 const winner = ref(null);
-const moveLogs = ref([]);
 const props = defineProps({
   gameSize: {
     type: String,
@@ -275,6 +275,9 @@ const heaps = ref(
     : createHeaps(props.gameSize),
 );
 
+const moveLogs = ref(props.matchData?.moveLogs ? [...props.matchData.moveLogs] : []);
+const moveStep = ref(moveLogs.value.length + 1);
+
 watch(
   () => props.gameSize,
   (newSize) => {
@@ -297,7 +300,9 @@ watch(
     currentPlayer.value = match.currentPlayer;
     winner.value = null;
     selectedMove.value = null;
-    hasMove.value = false;
+    hasMove.value = match.moveLogs && match.moveLogs.length > 0;
+    moveLogs.value = match.moveLogs ? [...match.moveLogs] : [];
+    moveStep.value = moveLogs.value.length + 1;
 
     if (props.gameMode === "PVE" && currentPlayer.value === 2) {
       setTimeout(() => {
@@ -390,6 +395,7 @@ function endTurn() {
   heaps.value = result.heaps;
 
   moveLogs.value.unshift({
+    moveStep: moveStep.value++,
     player: currentPlayer.value,
     heapIndex: selectedMove.value.heapIndex,
     removeCount: selectedMove.value.removeCount,
@@ -434,6 +440,7 @@ function endTurn() {
       };
 
       moveLogs.value.unshift({
+        moveStep: moveStep.value++,
         player: 2,
         heapIndex: aiResult.heapIndex,
         removeCount: aiResult.removeCount,
@@ -471,6 +478,8 @@ function resetGame() {
   hasMove.value = false;
 
   moveLogs.value = [];
+
+  moveStep.value = 1;
 }
 
 function tryGoMenu() {
@@ -500,6 +509,7 @@ function saveAndExit() {
     heaps: [...heaps.value],
     currentPlayer: currentPlayer.value,
     date: new Date().toLocaleString(),
+    moveLogs: [...moveLogs.value],
   };
 
   showExitConfirm.value = false;
