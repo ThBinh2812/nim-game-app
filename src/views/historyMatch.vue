@@ -27,7 +27,7 @@
         Lịch sử trống. Hãy chơi một ván để lưu lại lịch sử trận đấu!
       </div>
       
-      <div v-else class="space-y-3 max-h-[400px] overflow-y-auto">
+      <div v-else class="space-y-3 max-h-[400px] overflow-y-auto log-scroll">
         <div
           v-for="match in props.matches"
           :key="match.id"
@@ -167,3 +167,26 @@ function confirmDelete() {
   cancelDelete();
 }
 </script>
+<style>
+/* Bảng log */
+.log-scroll::-webkit-scrollbar {
+  width: 4px;
+}
+
+.log-scroll::-webkit-scrollbar-track {
+  background: transparent;
+}
+
+.log-scroll::-webkit-scrollbar-thumb {
+  background: rgba(255, 255, 255, 0.2);
+  border-radius: 999px;
+}
+
+.log-scroll::-webkit-scrollbar-thumb:hover {
+  background: rgba(255, 255, 255, 0.35);
+}
+
+.log-scroll div {
+  transition: all 0.2s ease;
+}
+</style>
