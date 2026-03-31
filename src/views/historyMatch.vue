@@ -11,7 +11,7 @@
         <h1 class="text-2xl font-semibold">Lịch Sử</h1>
 
         <button
-          @click="emit('goMenu')"
+          @click="{ playMenuClick() ;emit('goMenu'); }"
           class="px-4 py-2 rounded-lg bg-white/5 hover:bg-white/10 border border-white/10"
         >
           Trở về
@@ -106,9 +106,10 @@
 </template>
 
 <script setup>
-const emit = defineEmits(["goMenu", "loadMatch", "deleteMatch"]);
 import { ref } from "vue";
+import { playMenuClick } from "../store/gameSound";
 
+const emit = defineEmits(["goMenu", "loadMatch", "deleteMatch"]);
 const showDeleteConfirm = ref(false);
 const pendingDeleteId = ref(null);
 const props = defineProps({
@@ -140,6 +141,7 @@ const aiMap = {
 };
 
 function playMatch(match) {
+  playMenuClick();
   emit("loadMatch", match);
 }
 
@@ -148,15 +150,18 @@ function playMatch(match) {
 // }
 
 function openDeleteConfirm(matchId) {
+  playMenuClick();
   pendingDeleteId.value = matchId;
   showDeleteConfirm.value = true;
 }
 function cancelDelete() {
+  playMenuClick();
   showDeleteConfirm.value = false;
   pendingDeleteId.value = null;
 }
 function confirmDelete() {
   if (pendingDeleteId.value != null) {
+    playMenuClick();
     emit("deleteMatch", pendingDeleteId.value);
   }
   cancelDelete();

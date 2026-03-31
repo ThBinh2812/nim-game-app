@@ -57,10 +57,14 @@ const props = defineProps({
   selected: Number,
   isAI: Boolean,
 });
+import { playClickEffect } from '../store/gameSound';
 
 const emit = defineEmits(["remove"]);
 
 function selectStone(removeCount) {
+
+  playClickEffect();
+
   emit("remove", {
     heapIndex: props.index,
     removeCount,

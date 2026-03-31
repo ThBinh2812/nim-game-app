@@ -163,7 +163,7 @@
             </button>
 
             <button
-              @click="$emit('goMenu')"
+              @click="{$emit('goMenu'); playMenuClick();}"
               class="px-6 py-3 rounded-lg bg-white/5 hover:bg-white/10 border border-white/10"
             >
               Về Menu
@@ -190,21 +190,21 @@
 
         <div class="flex gap-3 justify-center">
           <button
-            @click="saveAndExit"
+            @click="{playMenuClick(); saveAndExit();}"
             class="px-5 py-2 rounded-lg bg-blue-600 hover:bg-blue-500"
           >
             Lưu
           </button>
 
           <button
-            @click="exitWithoutSave"
+            @click="{playMenuClick(); exitWithoutSave();}"
             class="px-5 py-2 rounded-lg bg-red-600 hover:bg-red-500"
           >
             Không
           </button>
 
           <button
-            @click="showExitConfirm = false"
+            @click="playMenuClick(); showExitConfirm = false;"
             class="px-5 py-2 rounded-lg bg-white/5 border border-white/10 hover:bg-white/10"
           >
             Hủy
@@ -229,6 +229,12 @@ import {
   aiMoveTurnMisereHard,
 } from "@/store/startGame.js";
 import { watch } from "vue";
+import {
+  playClickEffect, 
+  playMenuClick, 
+  playMenuClick2,
+  playWinSound,
+} from "../store/gameSound";
 
 /* GAME STATE */
 const emit = defineEmits(["goMenu", "saveMatch", "removeFinishedMatch"]);
@@ -306,6 +312,7 @@ watch(
   () => winner.value,
   (newWinner) => {
     if (!newWinner) return;
+    playWinSound();
     if (removedOnFinish.value) return;
 
     const loadedMatchId = props.matchData?.id;
@@ -355,6 +362,7 @@ function playerMove({ heapIndex, removeCount }) {
 
 /* Main Logic */
 function endTurn() {
+  playMenuClick2();
   if (winner.value) return;
 
   let result = null;
@@ -431,11 +439,13 @@ function endTurn() {
         removeCount: aiResult.removeCount,
       });
 
+      playClickEffect();
       setTimeout(() => {
         heaps.value = aiResult.heaps;
         winner.value = aiResult.winner;
         currentPlayer.value = aiResult.currentPlayer;
 
+        playMenuClick2();
         aiMove.value = null;
       }, 1000);
 
@@ -449,6 +459,7 @@ function endTurn() {
 }
 
 function resetGame() {
+  playMenuClick();
   heaps.value = createHeaps(props.gameSize);
 
   selectedMove.value = null;
@@ -463,6 +474,7 @@ function resetGame() {
 }
 
 function tryGoMenu() {
+  playMenuClick();
   if (winner.value) {
     emit("goMenu");
     return;

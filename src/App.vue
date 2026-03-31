@@ -3,6 +3,7 @@
     v-if="screen === 'MENU'"
     @startGame="launchGame"
     @continueGame="screen = 'HISTORY'"
+    @goSetting="screen = 'SETTING'"
   />
 
   <Game
@@ -24,6 +25,11 @@
     @loadMatch="loadSavedGame"
     @deleteMatch="handleDeleteMatch"
   />
+
+  <SettingPage
+  v-if="screen === 'SETTING'"
+  @close="screen = 'MENU'"
+  />
 </template>
 
 <script setup>
@@ -32,6 +38,7 @@ import { ref, onMounted } from "vue";
 import Menu from "@/views/Menu.vue";
 import Game from "@/views/NimGame.vue";
 import HistoryMatch from "@/views/historyMatch.vue";
+import SettingPage from "@/views/SettingPage.vue";
 import {
   savedGames,
   loadSavedGames,
