@@ -19,20 +19,21 @@
     >
       <!-- STONES -->
       <div class="grid grid-cols-10 gap-[clamp(4px,0.6vw,12px)] justify-center">
-        <div
+        <img
           v-if="count > 0"
           v-for="i in count"
-          :key="`stone-${i}`"
+          :key="`stone-${props.index}-${i}`"
+          :src="planetMap[i - 1]"
           @click="selectStone(i)"
-          class="w-[clamp(18px,1.8vw,36px)] h-[clamp(18px,1.8vw,36px)] rounded-full border transition cursor-pointer"
+          class="planet w-[clamp(18px,1.8vw,36px)] h-[clamp(18px,1.8vw,36px)] transition cursor-pointer"
           :class="
             i <= selected
               ? isAI
-                ? 'border-purple-400 bg-purple-500/40 shadow-md shadow-purple-500/30'
-                : 'border-blue-400 bg-blue-500/40 shadow-md shadow-blue-500/30'
-              : 'border-white/20 bg-white/5 hover:bg-blue-500/20'
+                ? 'selected-ai'
+                : 'selected-player'
+              : 'unselected'
           "
-        ></div>
+        />
 
         <div
           v-else
@@ -57,12 +58,42 @@ const props = defineProps({
   selected: Number,
   isAI: Boolean,
 });
-import { playClickEffect } from '../store/gameSound';
+import { playClickEffect } from "../store/gameSound";
+import earthIcon from "@/assets/earth.png";
+import marsIcon from "@/assets/marsIcon.png";
+import neptuneIcon from "@/assets/neptune.png";
+import { ref, watch } from "vue";
+
+const planetMap = ref([]);
+const planets = [earthIcon, marsIcon, neptuneIcon];
 
 const emit = defineEmits(["remove"]);
 
-function selectStone(removeCount) {
+watch(
+  () => props.count,
+  (newCount, oldCount) => {
+    if (oldCount === undefined) {
+      planetMap.value = Array.from({ length: newCount }, () =>
+        planets[Math.floor(Math.random() * planets.length)]
+      );
+      return;
+    }
 
+    if (newCount < oldCount) {
+      planetMap.value.splice(newCount);
+    } else {
+      for (let i = oldCount; i < newCount; i++) {
+        planetMap.value.push(
+          planets[Math.floor(Math.random() * planets.length)]
+        );
+      }
+    }
+  },
+  { immediate: true }
+);
+
+function selectStone(removeCount) {
+  if (props.count === 0) return;
   playClickEffect();
 
   emit("remove", {
@@ -70,6 +101,7 @@ function selectStone(removeCount) {
     removeCount,
   });
 }
+
 </script>
 <style scoped>
 .stone-leave-active {
@@ -91,4 +123,29 @@ function selectStone(removeCount) {
   border-color: rgba(252, 165, 165, 0.55);
   opacity: 0.8;
 }
+
+.planet {
+  object-fit: cover;
+  border-radius: 50%;
+  transition: all 0.2s ease;
+}
+
+/* hover */
+.unselected:hover {
+  transform: scale(1.15);
+  filter: brightness(1.2);
+}
+
+/* player chọn (xanh) */
+.selected-player {
+  transform: scale(1.1);
+  filter: drop-shadow(0 0 6px rgba(59, 130, 246, 0.8));
+}
+
+/* AI chọn (tím) */
+.selected-ai {
+  transform: scale(1.1);
+  filter: drop-shadow(0 0 6px rgba(168, 85, 247, 0.8));
+}
+
 </style>

@@ -1,6 +1,7 @@
 <template>
   <div
     class="min-h-screen bg-gradient-to-br from-[#0b0f1a] to-[#05070d] flex items-center justify-center text-gray-200"
+    :style="{ backgroundImage: `url(${nimBG3})` }"
   >
     <div
       class="w-[520px] relative bg-[#0f172a]/80 backdrop-blur-md border border-white/10 rounded-2xl p-10 shadow-2xl overflow-hidden"
@@ -160,6 +161,7 @@
 <script setup>
 import { ref, onMounted } from "vue";
 import { playMenuClick, playBGM } from "../store/gameSound";
+import nimBG3 from "@/assets/nimBG3.avif";
 
 onMounted(() => {
   playBGM();

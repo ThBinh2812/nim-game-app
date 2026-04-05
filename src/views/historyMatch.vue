@@ -1,6 +1,7 @@
 <template>
   <div
     class="min-h-screen bg-gradient-to-br from-[#0b0f1a] to-[#05070d] text-gray-200 flex items-center justify-center"
+    :style="{ backgroundImage: `url(${nimBG3})` }"
   >
     <div
       class="w-[650px] bg-[#0f172a]/80 backdrop-blur-md border border-white/10 rounded-2xl p-8 shadow-2xl"
@@ -108,6 +109,7 @@
 <script setup>
 import { ref } from "vue";
 import { playMenuClick } from "../store/gameSound";
+import nimBG3 from "@/assets/nimBG3.avif";
 
 const emit = defineEmits(["goMenu", "loadMatch", "deleteMatch"]);
 const showDeleteConfirm = ref(false);
